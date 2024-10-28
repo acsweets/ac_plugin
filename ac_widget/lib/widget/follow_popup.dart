@@ -8,7 +8,7 @@ class FollowPopup extends StatefulWidget {
     required this.width,
     required this.height,
     this.follow,
-    this.offsetRatio = 0.2,
+    this.offsetRatio = 0,
   });
 
   final double width;
@@ -34,7 +34,7 @@ class _FollowPopupState extends State<FollowPopup> {
         child: widget.child,
         onHover: (PointerHoverEvent event) {
           setState(() {
-            _showOverlay(context, event.position);
+            _showOverlay(context, event.localPosition);
           });
         },
         onExit: (PointerExitEvent event) {
@@ -54,8 +54,8 @@ class _FollowPopupState extends State<FollowPopup> {
     _overlayEntry?.remove();
     _overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        left: offset.dx + (widget.width * widget.offsetRatio),
-        top: offset.dy - (widget.height * widget.offsetRatio),
+        left: offset.dx - (widget.width * widget.offsetRatio),
+        top: offset.dy + (widget.height * widget.offsetRatio),
         child: widget.follow ??
             Container(
               padding: const EdgeInsets.all(10),
@@ -74,7 +74,6 @@ class _FollowPopupState extends State<FollowPopup> {
             ),
       ),
     );
-
     Overlay.of(context).insert(_overlayEntry!);
   }
 
