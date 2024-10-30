@@ -1,7 +1,3 @@
 library ac_tools;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'package:bot_toast/bot_toast.dart';
