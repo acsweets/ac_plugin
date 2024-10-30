@@ -1,45 +1,29 @@
+//Option拦截器可以用来统一处理Option信息 可以在这里添加
 import 'package:dio/dio.dart';
 
-class ResultData {
-  dynamic data;
-  bool isSuccess;
-  int code;
-  dynamic headers;
+import '../../ac_tools.dart';
 
-  ResultData(this.data, this.isSuccess, this.code, {this.headers});
-}
-
-///响应拦截器
-class ResponseInterceptors extends InterceptorsWrapper {
+class OptionInterceptor extends InterceptorsWrapper {
+  final Map<String, dynamic>? headers;
+  OptionInterceptor({this.headers});
   @override
-  ResultData onResponse(Response response, handler) {
-    RequestOptions option = response.requestOptions;
-    try {
-      if (option.contentType != null && option.contentType == "text") {
-        return ResultData(response.data, true, 200);
-      }
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    showLoading();
+    //在请求发起前修改头部
+    // options.headers["token"] = "11111";
+    ///请求的Content-Type，默认值是"application/json; charset=utf-8".
+    /// 如果您想以"application/x-www-form-urlencoded"格式编码请求数据,
+    options.contentType = Headers.formUrlEncodedContentType;
 
-      ///一般只需要处理200的情况，300、400、500保留错误信息
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        int code = response.data["code"];
-        if (code == 0) {
-          return ResultData(response.data, true, 200,
-              headers: response.headers);
-        } else if (code == 100006 || code == 100007) {
-        } else {
-          // Fluttertoast.showToast(msg: response.data["msg"]);
-          return ResultData(response.data, false, 200,
-              headers: response.headers);
-        }
-      }
-    } catch (e) {
-      print(e.toString() + option.path);
-
-      return ResultData(response.data, false, response.statusCode ?? 502,
-          headers: response.headers);
+    ///如果你的headers是固定的你可以在BaseOption中设置,如果不固定可以在这里进行根据条件设置
+    if (headers != null) options.headers.addAll(headers!);
+    //开发阶段可以把地址带参数打印出来方便校验结果
+    Log.d(
+        "request:${options.method}\t url-->${options.baseUrl}${options.path}?${options.queryParameters}");
+    if (options.queryParameters["hideLoading"] != true) {
+      // EasyLoading.show();
     }
-
-    return ResultData(response.data, false, response.statusCode ?? 502,
-        headers: response.headers);
+// 一定要加上这句话 否则进入不了下一步
+    return handler.next(options);
   }
 }

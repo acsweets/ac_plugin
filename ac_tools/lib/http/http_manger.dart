@@ -81,8 +81,41 @@ class HttpManger {
         cancelToken: cancelToken);
   }
 
+  //
+  // Future<void> downloadFile(String url, String savePath) async {
+  //   Dio dio = Dio();
+  //
+  //   try {
+  //     Response response = await dio.download(
+  //       url,
+  //       savePath,
+  //       onReceiveProgress: (received, total) {
+  //         if (total != -1) {
+  //           print("Download progress: ${(received / total * 100).toStringAsFixed(0)}%");
+  //         }
+  //       },
+  //     );
+  //     if (response.statusCode == 200) {
+  //       print("File downloaded successfully to $savePath");
+  //     } else {
+  //       print("Failed to download file. Status code: ${response.statusCode}");
+  //     }
+  //   } catch (e) {
+  //     print("Error occurred while downloading file: $e");
+  //   }
+  // }
+  //
+  // void main() async {
+  //   String url = "https://www.example.com/file.zip";
+  //   String savePath = "/path/to/save/file.zip"; // 使用系统相关的存储路径
+  //
+  //   await downloadFile(url, savePath);
+  // }
   Future<void> downloadFile({
+    ///下载的url
     required String url,
+
+    /// 保存的路劲
     required String savePath,
     ProgressCallback? receive, // 下载进度监听
     CancelToken? cancelToken, // 用于取消的 token，可以多个请求绑定一个 token
